@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 
 import java.util.Collections;
@@ -77,6 +78,20 @@ public class RestErrorHandler {
 
         final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(httpStatus).body(buildError(httpStatus.value(), ex.getMessage(), ex.getConstraintViolations()));
+    }
+
+    /**
+     * Handle response status exception
+     *
+     * @param ex Response status exception
+     * @return Error
+     */
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Error> handleResponseStatusException(final ResponseStatusException ex) {
+        log.error("Response status exception error", ex);
+
+        final HttpStatus httpStatus = HttpStatus.valueOf(ex.getBody().getStatus());
+        return ResponseEntity.status(httpStatus).body(buildError(httpStatus.value(), ex.getBody().getDetail()));
     }
 
     /**

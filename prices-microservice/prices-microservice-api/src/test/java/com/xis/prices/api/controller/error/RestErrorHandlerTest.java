@@ -15,8 +15,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContext;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.ServerWebInputException;
 
 import java.util.Locale;
 import java.util.Set;
@@ -28,6 +30,8 @@ import static org.mockito.Mockito.*;
 class RestErrorHandlerTest {
 
     private static final String ERROR_MESSAGE = "Error message";
+
+    private static final String ERROR_DETAIL_MESSAGE = "Error message";
 
     private static final String CONSTRAINT_PROPERTY_PATH = "search.productId";
 
@@ -115,6 +119,29 @@ class RestErrorHandlerTest {
         assertEquals(1, result.getBody().getErrors().size());
         assertEquals(CONSTRAINT_PROPERTY_PATH, result.getBody().getErrors().getFirst().getField());
         assertEquals(CONSTRAINT_MESSAGE, result.getBody().getErrors().getFirst().getMessage());
+
+        verifyNoInteractions(messageSource);
+    }
+
+    @Test
+    @DisplayName("Given ResponseStatusException when handle ResponseStatusException should return expected response")
+    void givenResponseStatusException_whenResponseStatusException_shouldReturnExpectedResponse() {
+        final ServerWebInputException serverWebInputException = mock(ServerWebInputException.class);
+        final ProblemDetail problemDetail = mock(ProblemDetail.class);
+
+        when(serverWebInputException.getMessage()).thenReturn(ERROR_MESSAGE);
+        when(serverWebInputException.getBody()).thenReturn(problemDetail);
+        when(problemDetail.getStatus()).thenReturn(HttpStatus.BAD_REQUEST.value());
+        when(problemDetail.getDetail()).thenReturn(ERROR_DETAIL_MESSAGE);
+
+        var result = restErrorHandler.handleResponseStatusException(serverWebInputException);
+
+        assertNotNull(result);
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+        assertNotNull(result.getBody());
+        assertEquals(String.valueOf(HttpStatus.BAD_REQUEST.value()), result.getBody().getCode());
+        assertEquals(ERROR_DETAIL_MESSAGE, result.getBody().getMessage());
+        assertTrue(CollectionUtils.isEmpty(result.getBody().getErrors()));
 
         verifyNoInteractions(messageSource);
     }

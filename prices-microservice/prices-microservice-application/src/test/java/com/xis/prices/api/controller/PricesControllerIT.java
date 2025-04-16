@@ -34,9 +34,13 @@ class PricesControllerIT {
 
     private static final Long INVALID_PRODUCT_ID = -1L;
 
+    private static final String PRODUCT_ID_WITH_INVALID_CHARACTER = "a";
+
     private static final Integer BRAND_ID = 1;
 
     private static final Integer INVALID_BRAND_ID = -1;
+
+    private static final String BRAND_ID_WITH_INVALID_CHARACTER = "-";
 
     @Autowired
     private WebTestClient webTestClient;
@@ -60,8 +64,24 @@ class PricesControllerIT {
     }
 
     @Test
+    @DisplayName("Given product id with invalid value when error should return expected error")
+    void givenProductIdWithInvalidValue_whenError_shouldReturnExpectedError() {
+        webTestClient
+                .get()
+                .uri(PRICES_PATH.formatted(FIRST_DATE, PRODUCT_ID_WITH_INVALID_CHARACTER, BRAND_ID))
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isBadRequest()
+                .expectBody()
+                .jsonPath("$.code").isEqualTo(String.valueOf(HttpStatus.BAD_REQUEST.value()))
+                .jsonPath("$.message").isEqualTo("Type mismatch.")
+                .jsonPath("$.errors.length()").isEqualTo(0);
+    }
+
+    @Test
     @DisplayName("Given invalid brand id when error should return expected error")
-    void givenInvalidInvalidBrandId_whenError_shouldReturnExpectedError() {
+    void givenInvalidBrandId_whenError_shouldReturnExpectedError() {
         webTestClient
                 .get()
                 .uri(PRICES_PATH.formatted(FIRST_DATE, PRODUCT_ID, INVALID_BRAND_ID))
@@ -75,6 +95,22 @@ class PricesControllerIT {
                 .jsonPath("$.errors.length()").isEqualTo(1)
                 .jsonPath("$.errors[0].field").isEqualTo("prices.brandId")
                 .jsonPath("$.errors[0].message").isEqualTo("debe ser mayor que o igual a 1");
+    }
+
+    @Test
+    @DisplayName("Given brand id with invalid character when error should return expected error")
+    void givenBrandIdWithInvalidCharacter_whenError_shouldReturnExpectedError() {
+        webTestClient
+                .get()
+                .uri(PRICES_PATH.formatted(FIRST_DATE, PRODUCT_ID, BRAND_ID_WITH_INVALID_CHARACTER))
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isBadRequest()
+                .expectBody()
+                .jsonPath("$.code").isEqualTo(String.valueOf(HttpStatus.BAD_REQUEST.value()))
+                .jsonPath("$.message").isEqualTo("Type mismatch.")
+                .jsonPath("$.errors.length()").isEqualTo(0);
     }
 
     @Test
