@@ -4,7 +4,7 @@ import com.xis.prices.infrastructure.entity.PriceEntity;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 
@@ -25,12 +25,10 @@ public interface PriceReactiveCrudRepository extends ReactiveCrudRepository<Pric
      * @return Price entity
      */
     @Query("""
-            SELECT p.brand_id, p.product_id, p.price_list, p.start_date, p.end_date, p.price
+            SELECT p.brand_id, p.product_id, p.price_list, p.start_date, p.end_date, p.price, p.priority
             FROM Prices p
             WHERE (p.start_date < ?1 and p.end_date > ?1) and p.product_id = ?2 and p.brand_id = ?3
-            ORDER BY p.priority DESC
-            LIMIT 1
             """)
-    Mono<PriceEntity> search(final LocalDateTime applicationDate, final Long productId, final Integer brandId);
+    Flux<PriceEntity> search(final LocalDateTime applicationDate, final Long productId, final Integer brandId);
 
 }

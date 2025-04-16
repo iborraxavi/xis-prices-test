@@ -2,7 +2,7 @@ package com.xis.prices.domain.repository;
 
 import com.xis.prices.domain.model.Price;
 import com.xis.prices.domain.model.PriceRequest;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 /**
  * Price repository
@@ -17,6 +17,6 @@ public interface PriceRepository {
      * @param priceRequest Price request
      * @return Price
      */
-    Mono<Price> search(PriceRequest priceRequest);
+    Flux<Price> search(final PriceRequest priceRequest);
 
 }

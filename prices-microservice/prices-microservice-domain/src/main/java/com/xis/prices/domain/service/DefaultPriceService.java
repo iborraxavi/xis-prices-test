@@ -8,8 +8,11 @@ import com.xis.prices.domain.repository.PriceRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 /**
  * Default price service
@@ -34,6 +37,9 @@ public class DefaultPriceService implements PriceService {
     @Override
     public Mono<Price> searchPrice(@Valid final PriceRequest priceRequest) {
         return priceRepository.search(priceRequest)
+                .collectSortedList(Price::compareTo)
+                .filter(prices -> !CollectionUtils.isEmpty(prices))
+                .map(List::getFirst)
                 .switchIfEmpty(Mono.error(
                         new SearchNotFoundException(
                                 buildErrorMessage(priceRequest),
@@ -42,7 +48,7 @@ public class DefaultPriceService implements PriceService {
     }
 
     private String buildErrorMessage(final PriceRequest priceRequest) {
-        return String.format(ERROR_MESSAGE, priceRequest.applicationDate(), priceRequest.productId(), priceRequest.brandId());
+        return ERROR_MESSAGE.formatted(priceRequest.applicationDate(), priceRequest.productId(), priceRequest.brandId());
     }
 
 }

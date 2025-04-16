@@ -12,7 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDateTime;
@@ -44,7 +44,7 @@ class DefaultPriceRepositoryTest {
         final PriceEntity priceEntity = mock(PriceEntity.class);
         final Price price = mock(Price.class);
 
-        when(priceReactiveCrudRepository.search(APPLICATION_DATE, PRODUCT_ID, BRAND_ID)).thenReturn(Mono.just(priceEntity));
+        when(priceReactiveCrudRepository.search(APPLICATION_DATE, PRODUCT_ID, BRAND_ID)).thenReturn(Flux.just(priceEntity));
         when(priceInfrastructureMapper.toDomain(priceEntity)).thenReturn(price);
 
         var result = defaultPriceRepository.search(priceRequest);
@@ -64,7 +64,7 @@ class DefaultPriceRepositoryTest {
         final PriceEntity priceEntity = mock(PriceEntity.class);
         final Price price = mock(Price.class);
 
-        when(priceReactiveCrudRepository.search(APPLICATION_DATE, PRODUCT_ID, BRAND_ID)).thenReturn(Mono.error(new RuntimeException("Unexpected error")));
+        when(priceReactiveCrudRepository.search(APPLICATION_DATE, PRODUCT_ID, BRAND_ID)).thenReturn(Flux.error(new RuntimeException("Unexpected error")));
 
         var result = defaultPriceRepository.search(priceRequest);
 

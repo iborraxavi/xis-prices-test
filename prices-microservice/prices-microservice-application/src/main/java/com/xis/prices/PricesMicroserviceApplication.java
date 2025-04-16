@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author XIS
  */
 @SpringBootApplication
-public class postmanPricesMicroserviceApplication {
+public class PricesMicroserviceApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(PricesMicroserviceApplication.class, args);

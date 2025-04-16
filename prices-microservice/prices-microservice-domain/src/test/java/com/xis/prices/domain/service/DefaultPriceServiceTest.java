@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDateTime;
@@ -38,7 +38,7 @@ class DefaultPriceServiceTest {
         final PriceRequest priceRequest = mock(PriceRequest.class);
         final Price price = mock(Price.class);
 
-        when(priceRepository.search(priceRequest)).thenReturn(Mono.just(price));
+        when(priceRepository.search(priceRequest)).thenReturn(Flux.just(price));
         when(priceRequest.applicationDate()).thenReturn(APPLICATION_DATE);
         when(priceRequest.productId()).thenReturn(PRODUCT_ID);
         when(priceRequest.brandId()).thenReturn(BRAND_ID);
@@ -57,7 +57,7 @@ class DefaultPriceServiceTest {
     void givenPriceRequest_whenEmptySearchPriceResult_shouldReturnExpectedResponse() {
         final PriceRequest priceRequest = mock(PriceRequest.class);
 
-        when(priceRepository.search(priceRequest)).thenReturn(Mono.empty());
+        when(priceRepository.search(priceRequest)).thenReturn(Flux.empty());
         when(priceRequest.applicationDate()).thenReturn(APPLICATION_DATE);
         when(priceRequest.productId()).thenReturn(PRODUCT_ID);
         when(priceRequest.brandId()).thenReturn(BRAND_ID);

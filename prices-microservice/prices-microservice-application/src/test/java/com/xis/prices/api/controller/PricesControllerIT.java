@@ -46,7 +46,7 @@ class PricesControllerIT {
     void givenInvalidProductId_whenError_shouldReturnExpectedError() {
         webTestClient
                 .get()
-                .uri(String.format(PRICES_PATH, FIRST_DATE, INVALID_PRODUCT_ID, BRAND_ID))
+                .uri(PRICES_PATH.formatted(FIRST_DATE, INVALID_PRODUCT_ID, BRAND_ID))
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -64,7 +64,7 @@ class PricesControllerIT {
     void givenInvalidInvalidBrandId_whenError_shouldReturnExpectedError() {
         webTestClient
                 .get()
-                .uri(String.format(PRICES_PATH, FIRST_DATE, PRODUCT_ID, INVALID_BRAND_ID))
+                .uri(PRICES_PATH.formatted(FIRST_DATE, PRODUCT_ID, INVALID_BRAND_ID))
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -82,7 +82,7 @@ class PricesControllerIT {
     void givenInvalidApplicationDate_whenSearchNotFoundResults_shouldReturnExpectedError() {
         webTestClient
                 .get()
-                .uri(String.format(PRICES_PATH, INVALID_DATE, PRODUCT_ID, BRAND_ID))
+                .uri(PRICES_PATH.formatted(INVALID_DATE, PRODUCT_ID, BRAND_ID))
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.ACCEPT_LANGUAGE, "en-GB")
                 .exchange()
@@ -98,7 +98,7 @@ class PricesControllerIT {
     void givenFirstDate_whenSuccess_shouldReturnExpectedResponse() {
         webTestClient
                 .get()
-                .uri(String.format(PRICES_PATH, FIRST_DATE, PRODUCT_ID, BRAND_ID))
+                .uri(PRICES_PATH.formatted(FIRST_DATE, PRODUCT_ID, BRAND_ID))
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -116,7 +116,7 @@ class PricesControllerIT {
     void givenSecondDate_whenSuccess_shouldReturnExpectedResponse() {
         webTestClient
                 .get()
-                .uri(String.format(PRICES_PATH, SECOND_DATE, PRODUCT_ID, BRAND_ID))
+                .uri(PRICES_PATH.formatted(SECOND_DATE, PRODUCT_ID, BRAND_ID))
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -134,7 +134,7 @@ class PricesControllerIT {
     void givenThirdDate_whenSuccess_shouldReturnExpectedResponse() {
         webTestClient
                 .get()
-                .uri(String.format(PRICES_PATH, THIRD_DATE, PRODUCT_ID, BRAND_ID))
+                .uri(PRICES_PATH.formatted(THIRD_DATE, PRODUCT_ID, BRAND_ID))
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -152,7 +152,7 @@ class PricesControllerIT {
     void givenFourthDate_whenSuccess_shouldReturnExpectedResponse() {
         webTestClient
                 .get()
-                .uri(String.format(PRICES_PATH, FOURTH_DATE, PRODUCT_ID, BRAND_ID))
+                .uri(PRICES_PATH.formatted(FOURTH_DATE, PRODUCT_ID, BRAND_ID))
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -170,7 +170,7 @@ class PricesControllerIT {
     void givenFifthDate_whenSuccess_shouldReturnExpectedResponse() {
         webTestClient
                 .get()
-                .uri(String.format(PRICES_PATH, FIFTH_DATE, PRODUCT_ID, BRAND_ID))
+                .uri(PRICES_PATH.formatted(FIFTH_DATE, PRODUCT_ID, BRAND_ID))
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()

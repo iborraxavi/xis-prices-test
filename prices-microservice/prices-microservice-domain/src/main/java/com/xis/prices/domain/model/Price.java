@@ -24,5 +24,11 @@ public record Price(
         LocalDateTime endDate,
         Double price,
         String currency,
-        Integer priority) {
+        Integer priority) implements Comparable<Price> {
+
+    @Override
+    public int compareTo(final Price otherPrice) {
+        return otherPrice.priority.compareTo(this.priority);
+    }
+
 }

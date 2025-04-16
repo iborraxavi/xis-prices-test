@@ -10,6 +10,7 @@ import com.xis.prices.infrastructure.repository.jpa.PriceReactiveCrudRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -35,13 +36,13 @@ public class DefaultPriceRepository implements PriceRepository {
      * @return Price
      */
     @Override
-    public Mono<Price> search(final PriceRequest priceRequest) {
+    public Flux<Price> search(final PriceRequest priceRequest) {
         return priceReactiveCrudRepository.search(priceRequest.applicationDate(), priceRequest.productId(), priceRequest.brandId())
                 .map(priceInfrastructureMapper::toDomain)
                 .onErrorResume(error -> {
                     log.error("Repository unexpected error: {}", error.getMessage(), error);
                     return Mono.error(new PriceRepositoryException(
-                            String.format(ERROR_MESSAGE, priceRequest.applicationDate(), priceRequest.productId(), priceRequest.brandId()),
+                            ERROR_MESSAGE.formatted(priceRequest.applicationDate(), priceRequest.productId(), priceRequest.brandId()),
                             ErrorCode.PRICE_REPOSITORY_EXCEPTION,
                             new String[]{priceRequest.applicationDate().toString(), priceRequest.productId().toString(), priceRequest.brandId().toString()}));
                 });
